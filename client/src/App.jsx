@@ -1,7 +1,38 @@
-import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import AppLayout from './components/AppLayout.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx'; 
+import Dashboard from './pages/Dashboard.jsx';
+import Profile from './pages/Profile.jsx'; // 👈 1. Import the Profile page
 
-export const App = () => {
+const Placeholder = ({ title }) => (
+  <div className="w-full">
+    <h1 className="text-xl font-bold text-gray-900 mb-4 tracking-tight">{title}</h1>
+    <p className="text-sm text-gray-400 font-medium">{title} section coming soon...</p>
+  </div>
+);
+
+function App() {
   return (
-    <div>App</div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+
+        {/* Main App Routes wrapped in the Layout */}
+        <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} /> 
+            <Route path="/subscriptions" element={<Placeholder title="Subscriptions" />} />
+            <Route path="/playlists" element={<Placeholder title="Playlists" />} />
+            <Route path="/history" element={<Placeholder title="History" />} />
+            <Route path="/settings" element={<Placeholder title="Settings" />} />
+            <Route path="/help" element={<Placeholder title="Help" />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
+
+export default App;

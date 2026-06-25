@@ -1,6 +1,6 @@
 import asyncHandler from "../utils/asyncHandler.js";
 import { User } from "../models/user.model.js";
-import {uploadCloudinry, deleteFromCloudinary} from "../utils/cloudinary.js";
+import {uploadOnCloudinary, deleteFromCloudinary} from "../utils/cloudinary.js";
 
 const generateTokens = async (userId) => {
     try {
@@ -21,7 +21,7 @@ const userRegister = asyncHandler( async (req,res) => {
     
     const {username,email,fullname,password} = req.body;   //get data from frontend
 
-    if([username,email,fullname,password].some((field) => field.trim() === "")){    
+    if([username,email,fullname,password].some((field) => field?.trim() === "")){    
         return res.status(400).json({
             success : false,
             message : "All fields are required"
@@ -49,8 +49,11 @@ const userRegister = asyncHandler( async (req,res) => {
         })
     }
 
-    const avatar = await uploadCloudinry(avatarLocal);
-    const coverImage = await uploadCloudinry(coverImageLocal);
+    const avatar = await uploadOnCloudinary(avatarLocal);
+    let coverImage;
+    if (coverImageLocal) {
+        coverImage = await uploadOnCloudinary(coverImageLocal);
+    }
 
     if(!avatar){
         return res.status(400).json({
